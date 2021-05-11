@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import CategoryDataService from "../services/category.service";
+import Moment from 'moment';
 
 export default class Category extends Component {
   constructor(props) {
@@ -167,7 +168,7 @@ export default class Category extends Component {
                 <label>
                   <strong>Start_Date:</strong>
                 </label>
-                {currentCategory.start_date}
+                {Moment.utc(currentCategory.start_date).local().format("YYYY-MM-DD HH:mm:ss")}
               </div>
             </form>
 

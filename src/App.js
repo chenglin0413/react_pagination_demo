@@ -6,22 +6,22 @@ import "./App.css";
 import AddCategory from "./components/add-category.component";
 import Category from "./components/category.component";
 import CategoriesList from "./components/categories-list.component";
-
+import CategorySearch from "./components/category-search.component";
 class App extends Component {
   render() {
     return (
       <Router>
         <div>
           <nav className="navbar navbar-expand navbar-dark bg-dark">
-            <a href="/tutorials" className="navbar-brand">
-              bezKoder
+            <a href="/" className="navbar-brand">
+              Home
             </a>
             <div className="navbar-nav mr-auto">
-              <li className="nav-item">
-                <Link to={"/tutorials"} className="nav-link">
+              {/* <li className="nav-item">
+                <Link to={"/categories"} className="nav-link">
                   Categories
                 </Link>
-              </li>
+              </li> */}
               <li className="nav-item">
                 <Link to={"/add"} className="nav-link">
                   Add
@@ -32,9 +32,10 @@ class App extends Component {
 
           <div className="container mt-3">
             <Switch>
-              <Route exact path={["/", "/tutorials"]} component={CategoriesList} />
+              <Route exact path="/" component={CategorySearch}/>
+              <Route exact path={["/categories"]} component={CategoriesList} />
               <Route exact path="/add" component={AddCategory} />
-              <Route path="/tutorials/:id" component={Category} />
+              <Route path="/categories/:id" component={Category} />
             </Switch>
           </div>
         </div>

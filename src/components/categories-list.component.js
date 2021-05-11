@@ -7,7 +7,7 @@ import Pagination from "@material-ui/lab/Pagination";
 export default class CategoriesList extends Component {
   constructor(props) {
     super(props);
-    this.onChangeSearchTitle = this.onChangeSearchTitle.bind(this);
+    // this.onChangeSearchTitle = this.onChangeSearchTitle.bind(this);
     this.retrieveCategories = this.retrieveCategories.bind(this);
     this.refreshList = this.refreshList.bind(this);
     this.setActiveCategory = this.setActiveCategory.bind(this);
@@ -16,10 +16,11 @@ export default class CategoriesList extends Component {
     this.handlePageSizeChange = this.handlePageSizeChange.bind(this);
 
     this.state = {
-      tutorials: [],
-      currentTutorial: null,
+      categories: [],
+      currentCategory: null,
       currentIndex: -1,
-      searchTitle: "",
+      searchTitle:props.location.state.searchTitle || {},
+      // searchTitle: "",
 
       page: 1,
       count: 0,
@@ -33,13 +34,13 @@ export default class CategoriesList extends Component {
     this.retrieveCategories();
   }
 
-  onChangeSearchTitle(e) {
-    const searchTitle = e.target.value;
+  // onChangeSearchTitle(e) {
+  //   const searchTitle = e.target.value;
 
-    this.setState({
-      searchTitle: searchTitle,
-    });
-  }
+  //   this.setState({
+  //     searchTitle: searchTitle,
+  //   });
+  // }
 
   getRequestParams(searchTitle, page, pageSize) {
     let params = {};
@@ -66,10 +67,10 @@ export default class CategoriesList extends Component {
 
     CategoryDataService.getAll(params)
       .then((response) => {
-        const { tutorials, totalPages } = response.data;
+        const { categories, totalPages } = response.data;
         
         this.setState({
-          tutorials: tutorials,
+          categories: categories,
           count: totalPages,
         });
         console.log(response.data);
@@ -82,14 +83,14 @@ export default class CategoriesList extends Component {
   refreshList() {
     this.retrieveCategories();
     this.setState({
-      currentTutorial: null,
+      currentCategory: null,
       currentIndex: -1,
     });
   }
 
-  setActiveCategory(tutorial, index) {
+  setActiveCategory(category, index) {
     this.setState({
-      currentTutorial: tutorial,
+      currentCategory: category,
       currentIndex: index,
     });
   }
@@ -130,9 +131,9 @@ export default class CategoriesList extends Component {
 
   render() {
     const {
-      searchTitle,
-      tutorials,
-      currentTutorial,
+      // searchTitle,
+      categories,
+      currentCategory,
       currentIndex,
       page,
       count,
@@ -141,12 +142,12 @@ export default class CategoriesList extends Component {
 
     return (
       <div className="list row">
-        <div className="col-md-8">
+        {/* <div className="col-md-8">
           <div className="input-group mb-3">
             <input
               type="text"
               className="form-control"
-              placeholder="Search by title"
+              placeholder="Search by name"
               value={searchTitle}
               onChange={this.onChangeSearchTitle}
             />
@@ -160,7 +161,7 @@ export default class CategoriesList extends Component {
               </button>
             </div>
           </div>
-        </div>
+        </div> */}
         <div className="col-md-6">
           <h4>Categories List</h4>
 
@@ -187,17 +188,17 @@ export default class CategoriesList extends Component {
           </div>
 
           <ul className="list-group">
-            {tutorials &&
-              tutorials.map((tutorial, index) => (
+            {categories &&
+              categories.map((category, index) => (
                 <li
                   className={
                     "list-group-item " +
                     (index === currentIndex ? "active" : "")
                   }
-                  onClick={() => this.setActiveCategory(tutorial, index)}
+                  onClick={() => this.setActiveCategory(category, index)}
                   key={index}
                 >
-                  {tutorial.name}
+                  {category.name}
                 </li>
               ))}
           </ul>
@@ -210,36 +211,36 @@ export default class CategoriesList extends Component {
           </button>
         </div>
         <div className="col-md-6">
-          {currentTutorial ? (
+          {currentCategory ? (
             <div>
               <h4>Category</h4>
               <div>
                 <label>
                   <strong>Name:</strong>
                 </label>{" "}
-                {currentTutorial.name}
+                {currentCategory.name}
               </div>
               <div>
                 <label>
                   <strong>Description:</strong>
                 </label>{" "}
-                {currentTutorial.description}
+                {currentCategory.description}
               </div>
               <div>
                 <label>
                   <strong>LongDescription:</strong>
                 </label>{" "}
-                {currentTutorial.long_description}
+                {currentCategory.long_description}
               </div>
               <div>
                 <label>
                   <strong>Start_Date:</strong>
                 </label>{" "}
-                {Moment.utc(currentTutorial.start_date).local().format("YYYY-MM-DD HH:mm:ss")}
+                {Moment.utc(currentCategory.start_date).local().format("YYYY-MM-DD HH:mm:ss")}
               </div>
 
               <Link
-                to={"/tutorials/" + currentTutorial.id}
+                to={"/categories/" + currentCategory.id}
                 className="badge badge-warning"
               >
                 Edit
