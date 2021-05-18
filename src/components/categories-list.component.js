@@ -19,7 +19,7 @@ export default class CategoriesList extends Component {
       categories: [],
       currentCategory: null,
       currentIndex: -1,
-      searchTitle:props.location.state.searchTitle || {},
+      searchTitle:props.location.state.searchTitle || "",
       // searchTitle: "",
 
       page: 1,
