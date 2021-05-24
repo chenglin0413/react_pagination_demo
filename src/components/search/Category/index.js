@@ -40,7 +40,7 @@ export default class CategorySearch extends Component {
                 to={{pathname:"/categories",state:{searchTitle}}}
                  className="btn btn-outline-secondary"
               >
-                search
+                Category search
               </Link>
             </div>
           </div>

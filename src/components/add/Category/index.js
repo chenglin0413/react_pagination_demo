@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import CategoryDataService from "../services/category.service";
+import CategoryDataService from "../../../services/Category";
 
 export default class AddCategory extends Component {
   constructor(props) {

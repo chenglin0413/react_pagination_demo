@@ -1,13 +1,25 @@
 import React, { Component } from "react";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import { DropdownButton,Dropdown } from 'react-bootstrap';
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 
-import AddCategory from "./components/add-category.component";
-import Category from "./components/category.component";
-import CategoriesList from "./components/categories-list.component";
-import CategorySearch from "./components/category-search.component";
+import Home from './components/home.component';
+import Category from "./components/Category"
+import Customer from "./components/Customer";
+import CategorySearch from "./components/search/Category";
+import CategoriesList from "./components/list/Category";
+import AddCategory from "./components/add/Category";
+import CustomerSearch from './components/search/Customer';
+import CustomersList from './components/list/Customer';
+import AddCustomer from "./components/add/Customer";
+
+
+
+
 class App extends Component {
+  
+
   render() {
     return (
       <Router>
@@ -16,26 +28,39 @@ class App extends Component {
             <a href="/" className="navbar-brand">
               Home
             </a>
-            <div className="navbar-nav mr-auto">
-              {/* <li className="nav-item">
-                <Link to={"/categories"} className="nav-link">
-                  Categories
-                </Link>
-              </li> */}
+            <div className="navbar-nav">
               <li className="nav-item">
-                <Link to={"/add"} className="nav-link">
-                  Add
-                </Link>
+                <DropdownButton id="dropdown-item-button" title="Customer">
+                    <Dropdown.Item as="button">
+                      <Link to={"/customer-search"} >Search</Link>
+                    </Dropdown.Item>
+                    <Dropdown.Item as="button">
+                      <Link to={"/customer-add"} >Add</Link>
+                    </Dropdown.Item>
+                </DropdownButton>
+              </li>
+            </div>
+            <div className="navbar-nav">
+              <li className="nav-item">   
+                <DropdownButton id="dropdown-item-button" title="Category">
+                    <Dropdown.Item as="button">
+                      <Link to={"/category-search"}>Search</Link>
+                    </Dropdown.Item>
+                </DropdownButton>
               </li>
             </div>
           </nav>
 
           <div className="container mt-3">
             <Switch>
-              <Route exact path="/" component={CategorySearch}/>
-              <Route exact path={["/categories"]} component={CategoriesList} />
-              <Route exact path="/add" component={AddCategory} />
+              <Route exact path="/" component={Home}/>
+              <Route exact path="/category-search" component={CategorySearch}/>
+              <Route exact path="/customer-search" component={CustomerSearch}/>
+              <Route exact path="/categories" component={CategoriesList} />
+              <Route exact path="/customers" component={CustomersList} />
+              <Route exact path="/customer-add" component={AddCustomer}/>
               <Route path="/categories/:id" component={Category} />
+              <Route path="/customers/:id" component={Customer} />
             </Switch>
           </div>
         </div>
