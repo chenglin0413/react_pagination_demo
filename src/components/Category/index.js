@@ -5,7 +5,7 @@ import Moment from 'moment';
 export default class Category extends Component {
   constructor(props) {
     super(props);
-    this.onChangeTitle = this.onChangeTitle.bind(this);
+    this.onChangeName = this.onChangeName.bind(this);
     this.onChangeDescription = this.onChangeDescription.bind(this);
     this.onChangeLongDescription = this.onChangeLongDescription.bind(this);
     this.getCategory = this.getCategory.bind(this);
@@ -29,7 +29,7 @@ export default class Category extends Component {
     this.getCategory(this.props.match.params.id);
   }
 
-  onChangeTitle(e) {
+  onChangeName(e) {
     const name = e.target.value;
 
     this.setState(function(prevState) {
@@ -141,7 +141,7 @@ export default class Category extends Component {
                   className="form-control"
                   id="title"
                   value={currentCategory.name}
-                  onChange={this.onChangeTitle}
+                  onChange={this.onChangeName}
                 />
               </div>
               <div className="form-group">

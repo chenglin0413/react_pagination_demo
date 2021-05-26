@@ -4,24 +4,26 @@ import CategoryDataService from "../../../services/Category";
 export default class AddCategory extends Component {
   constructor(props) {
     super(props);
-    this.onChangeTitle = this.onChangeTitle.bind(this);
+    this.onChangeName = this.onChangeName.bind(this);
     this.onChangeDescription = this.onChangeDescription.bind(this);
-    this.saveTutorial = this.saveTutorial.bind(this);
-    this.newTutorial = this.newTutorial.bind(this);
+    this.onChangeLongDescription = this.onChangeLongDescription.bind(this);
+    this.saveCategory = this.saveCategory.bind(this);
+    this.newCategory = this.newCategory.bind(this);
 
     this.state = {
       id: null,
-      title: "",
+      name: "",
       description: "", 
+      longDescription: "", 
       published: false,
 
       submitted: false
     };
   }
 
-  onChangeTitle(e) {
+  onChangeName(e) {
     this.setState({
-      title: e.target.value
+      name: e.target.value
     });
   }
 
@@ -31,18 +33,26 @@ export default class AddCategory extends Component {
     });
   }
 
-  saveTutorial() {
+  onChangeLongDescription(e) {
+    this.setState({
+      longDescription: e.target.value
+    });
+  }
+
+  saveCategory() {
     var data = {
-      title: this.state.title,
-      description: this.state.description
+      name: this.state.name,
+      description: this.state.description,
+      longDescription: this.state.longDescription,
     };
 
     CategoryDataService.create(data)
       .then(response => {
         this.setState({
           id: response.data.id,
-          title: response.data.title,
+          name: response.data.name,
           description: response.data.description,
+          longDescription: response.data.longDescription,
           published: response.data.published,
 
           submitted: true
@@ -54,11 +64,12 @@ export default class AddCategory extends Component {
       });
   }
 
-  newTutorial() {
+  newCategory() {
     this.setState({
       id: null,
-      title: "",
+      name: "",
       description: "",
+      longDescription: "",
       published: false,
 
       submitted: false
@@ -71,22 +82,22 @@ export default class AddCategory extends Component {
         {this.state.submitted ? (
           <div>
             <h4>You submitted successfully!</h4>
-            <button className="btn btn-success" onClick={this.newTutorial}>
+            <button className="btn btn-success" onClick={this.newCategory}>
               Add
             </button>
           </div>
         ) : (
           <div>
             <div className="form-group">
-              <label htmlFor="title">Title</label>
+              <label htmlFor="name">Name</label>
               <input
                 type="text"
                 className="form-control"
-                id="title"
+                id="name"
                 required
-                value={this.state.title}
-                onChange={this.onChangeTitle}
-                name="title"
+                value={this.state.name}
+                onChange={this.onChangeName}
+                name="name"
               />
             </div>
 
@@ -102,8 +113,20 @@ export default class AddCategory extends Component {
                 name="description"
               />
             </div>
+            <div className="form-group">
+              <label htmlFor="longDescription">LongDescription</label>
+              <input
+                type="text"
+                className="form-control"
+                id="longDescription"
+                required
+                value={this.state.longDescription}
+                onChange={this.onChangeLongDescription}
+                name="longDescription"
+              />
+            </div>
 
-            <button onClick={this.saveTutorial} className="btn btn-success">
+            <button onClick={this.saveCategory} className="btn btn-success">
               Submit
             </button>
           </div>

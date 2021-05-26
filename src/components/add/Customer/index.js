@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+//FormVaildator
+import FormErrors from '../FormErros';
 import CustomerDataService from "../../../services/Customer";
 
 export default class AddCustomer extends Component {
@@ -8,7 +10,7 @@ export default class AddCustomer extends Component {
     this.onChangeLastName = this.onChangeLastName.bind(this);
     this.onChangeEmailAddress = this.onChangeEmailAddress.bind(this);
     this.saveCustomer = this.saveCustomer.bind(this);
-    this.newTutorial = this.newTutorial.bind(this);
+    this.newCustomer = this.newCustomer.bind(this);
 
     this.state = {
       id: null,
@@ -16,29 +18,71 @@ export default class AddCustomer extends Component {
       lastName: "", 
       emailAddress: "", 
       published: false,
-
-      submitted: false
+      submitted: false,
+      formErrors:{firstName:"",lastName:"",emailAddress:""},
+      firstNameValid: false,
+      lastNameValid: false,
+      emailAddressValid: false,
+      formValid: false
     };
   }
 
   onChangeFirstName(e) {
+    const value = e.target.value
+    const name =  e.target.name
     this.setState({
-      firstName: e.target.value
-    });
+      firstName: value
+    },()=>this.validateField(name,value));
   }
 
   onChangeLastName(e) {
+    const value = e.target.value
+    const name =  e.target.name
     this.setState({
-      lastName: e.target.value
-    });
+      lastName:value
+    },()=>this.validateField(name, value));
   }
 
   onChangeEmailAddress(e) {
+    const value = e.target.value
+    const name =  e.target.name
     this.setState({
-      emailAddress: e.target.value
-    });
+      emailAddress: value
+    },()=>this.validateField(name, value));
   }
 
+  validateField(fieldName, value) {
+    let fieldValidationErrors = this.state.formErrors;
+    let firstNameValid = this.state.firstNameValid;
+    let lastNameValid = this.state.lastNameValid;
+    let emailAddressValid = this.state.emailAddressValid;
+  
+    switch(fieldName) {
+      case 'emailAddress':
+        emailAddressValid = value.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i);
+        fieldValidationErrors.emailAddress = emailAddressValid ? '' : ' is invalid';
+        break;
+      case 'firstName':
+        firstNameValid = value.length >= 4;
+        fieldValidationErrors.firstName = firstNameValid ? '': ' is too short';
+        break;
+      case 'lastName':
+        lastNameValid = value.length >= 6 && value.length <= 20;
+        fieldValidationErrors.lastName = lastNameValid ? '': ' is too short';
+        break;
+      default:
+        break;
+    }
+    this.setState({formErrors: fieldValidationErrors,
+                    firstNameValid: firstNameValid,
+                    lastNameValid: lastNameValid,
+                    emailAddressValid: emailAddressValid,
+                  }, this.validateForm);
+  }
+  
+  validateForm() {
+    this.setState({formValid: this.state.firstNameValid && this.state.lastNameValid && this.state.emailAddressValid });
+  }
 
   saveCustomer() {
     var data = {
@@ -65,16 +109,21 @@ export default class AddCustomer extends Component {
       });
   }
 
-  newTutorial() {
+  newCustomer() {
     this.setState({
       id: null,
-      title: "",
-      description: "",
+      firstName: "",
+      lastName: "",
+      emailAddress: "",
       published: false,
 
       submitted: false
     });
   }
+
+  // errorClass(error){
+  //   return (error.length===0 ? '':'has-error');
+  // }
 
   render() {
     return (
@@ -82,13 +131,13 @@ export default class AddCustomer extends Component {
         {this.state.submitted ? (
           <div>
             <h4>You submitted successfully!</h4>
-            <button className="btn btn-success" onClick={this.newTutorial}>
+            <button className="btn btn-success" onClick={this.newCustomer}>
               Add
             </button>
           </div>
         ) : (
           <div>
-            <div className="form-group">
+          <div className='form-group'>
               <label htmlFor="firstName">FirstName</label>
               <input
                 type="text"
@@ -101,7 +150,7 @@ export default class AddCustomer extends Component {
               />
             </div>
 
-            <div className="form-group">
+            <div className='form-group'>
               <label htmlFor="lastName">LastName</label>
               <input
                 type="text"
@@ -114,7 +163,7 @@ export default class AddCustomer extends Component {
               />
             </div>
 
-            <div className="form-group">
+            <div className='form-group'>
               <label htmlFor="emailAddress">EmailAddress</label>
               <input
                 type="text"
@@ -126,8 +175,10 @@ export default class AddCustomer extends Component {
                 name="emailAddress"
               />
             </div>
-
-            <button onClick={this.saveTutorial} className="btn btn-success">
+            <div className="panel panel-default">
+              <FormErrors formErrors={this.state.formErrors} />
+            </div>
+            <button disabled={!this.state.formValid} onClick={this.saveCustomer} className="btn btn-success">
               Submit
             </button>
           </div>

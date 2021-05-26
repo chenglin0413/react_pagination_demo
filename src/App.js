@@ -9,7 +9,6 @@ import Category from "./components/Category"
 import Customer from "./components/Customer";
 import CategorySearch from "./components/search/Category";
 import CategoriesList from "./components/list/Category";
-import AddCategory from "./components/add/Category";
 import CustomerSearch from './components/search/Customer';
 import CustomersList from './components/list/Customer';
 import AddCustomer from "./components/add/Customer";
