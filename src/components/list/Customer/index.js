@@ -1,22 +1,22 @@
 import React, { Component } from "react";
+import {connect} from 'react-redux';
 import Moment from 'moment';
-import CustomerDataService from "../../../services/Customer";
+import {retrieveCustAction} from "../../../actions/customersActions";
+// import CustomerDataService from '../../../services/Customer';
 import { Link } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
 
-export default class CustomersList extends Component {
+class CustomersList extends Component {
   constructor(props) {
     super(props);
-    // this.onChangeSearchTitle = this.onChangeSearchTitle.bind(this);
     this.retrieveCustomers = this.retrieveCustomers.bind(this);
-    this.refreshList = this.refreshList.bind(this);
+    this.refreshData= this.refreshData.bind(this);
     this.setActiveCustomer = this.setActiveCustomer.bind(this);
     // this.removeAllCategories = this.removeAllCategories.bind(this);
     this.handlePageChange = this.handlePageChange.bind(this);
     this.handlePageSizeChange = this.handlePageSizeChange.bind(this);
 
     this.state = {
-      customers: [],
       currentCustomer: null,
       currentIndex: -1,
       searchTitle:props.location.state.searchTitle || "",
@@ -36,19 +36,15 @@ export default class CustomersList extends Component {
 
   getRequestParams(searchTitle, page, pageSize) {
     let params = {};
-
     if (searchTitle) {
       params["firstName"] = searchTitle;
     }
-
     if (page) {
       params["page"] = page - 1;
     }
-
     if (pageSize) {
       params["size"] = pageSize;
     }
-
     return params;
   }
 
@@ -57,23 +53,23 @@ export default class CustomersList extends Component {
     console.log("searchTitle:"+searchTitle);
     const params = this.getRequestParams(searchTitle, page, pageSize);
 
-    CustomerDataService.getAll(params)
+    this.props
+    .retrieveCustAction(params)
       .then((response) => {
-        const { customers, totalPages } = response.data;
-        
+        console.log(response);
+        const { customers, totalPages } = response;
         this.setState({
           customers: customers,
           count: totalPages,
         });
-        console.log(response.data);
+        console.log(response);
       })
       .catch((e) => {
         console.log(e);
       });
   }
 
-  refreshList() {
-    this.retrieveCustomers();
+  refreshData() {
     this.setState({
       currentCustomer: null,
       currentIndex: -1,
@@ -120,7 +116,10 @@ export default class CustomersList extends Component {
       }
     );
   }
-
+  findByFirstName() {
+    this.refreshData();
+    this.props.findCustomersByFirstName(this.state.searchTitle);
+  }
   render() {
     const {
       // searchTitle,
@@ -229,3 +228,14 @@ export default class CustomersList extends Component {
     );
   }
 }
+
+const mapStateToProps = (state) => {
+  return {
+      customers: state.customers
+  };
+}
+
+export default connect(mapStateToProps, {
+  retrieveCustAction,
+})(CustomersList);
+
