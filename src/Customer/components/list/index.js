@@ -1,23 +1,21 @@
 import React, { Component } from "react";
+import {connect} from 'react-redux';
 import Moment from 'moment';
-import CategoryDataService from "../../../services/Category";
 import { Link } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
+import {retrieveCustAction} from "../../actions/customersActions";
 
-export default class CategoriesList extends Component {
+class CustomersList extends Component {
   constructor(props) {
     super(props);
-    // this.onChangeSearchTitle = this.onChangeSearchTitle.bind(this);
-    this.retrieveCategories = this.retrieveCategories.bind(this);
-    this.refreshList = this.refreshList.bind(this);
-    this.setActiveCategory = this.setActiveCategory.bind(this);
-    // this.removeAllCategories = this.removeAllCategories.bind(this);
+    this.retrieveCustomers = this.retrieveCustomers.bind(this);
+    this.refreshData= this.refreshData.bind(this);
+    this.setActiveCustomer = this.setActiveCustomer.bind(this);
     this.handlePageChange = this.handlePageChange.bind(this);
     this.handlePageSizeChange = this.handlePageSizeChange.bind(this);
 
     this.state = {
-      categories: [],
-      currentCategory: null,
+      currentCustomer: null,
       currentIndex: -1,
       searchTitle:props.location.state.searchTitle || "",
       // searchTitle: "",
@@ -31,88 +29,66 @@ export default class CategoriesList extends Component {
   }
 
   componentDidMount() {
-    this.retrieveCategories();
+    this.retrieveCustomers();
   }
-
-  // onChangeSearchTitle(e) {
-  //   const searchTitle = e.target.value;
-
-  //   this.setState({
-  //     searchTitle: searchTitle,
-  //   });
-  // }
 
   getRequestParams(searchTitle, page, pageSize) {
     let params = {};
-
     if (searchTitle) {
-      params["name"] = searchTitle;
+      params["firstName"] = searchTitle;
     }
-
     if (page) {
       params["page"] = page - 1;
     }
-
     if (pageSize) {
       params["size"] = pageSize;
     }
-
     return params;
   }
 
-  retrieveCategories() {
+  retrieveCustomers() {
     const { searchTitle, page, pageSize } = this.state;
     console.log("searchTitle:"+searchTitle);
     const params = this.getRequestParams(searchTitle, page, pageSize);
 
-    CategoryDataService.getAll(params)
+    this.props
+    .retrieveCustAction(params)
       .then((response) => {
-        const { categories, totalPages } = response.data;
-        
+        console.log(response);
+        const { customers, totalPages } = response;
         this.setState({
-          categories: categories,
+          customers: customers,
           count: totalPages,
         });
-        console.log(response.data);
+        console.log(response);
       })
       .catch((e) => {
         console.log(e);
       });
   }
 
-  refreshList() {
-    this.retrieveCategories();
+  refreshData() {
     this.setState({
-      currentCategory: null,
+      currentCustomer: null,
       currentIndex: -1,
     });
   }
 
-  setActiveCategory(category, index) {
+  setActiveCustomer(customer, index) {
     this.setState({
-      currentCategory: category,
+      currentCustomer: customer,
       currentIndex: index,
     });
   }
 
-  // removeAllCategories() {
-  //   CategoryDataService.deleteAll()
-  //     .then((response) => {
-  //       console.log(response.data);
-  //       this.refreshList();
-  //     })
-  //     .catch((e) => {
-  //       console.log(e);
-  //     });
-  // }
-
+  
   handlePageChange(event, value) {
     this.setState(
       {
         page: value,
       },
       () => {
-        this.retrieveCategories();
+        this.retrieveCustomers();
       }
     );
   }
@@ -124,7 +100,7 @@ export default class CategoriesList extends Component {
         page: 1
       },
       () => {
-        this.retrieveCategories();
+        this.retrieveCustomers();
       }
     );
   }
@@ -132,38 +108,18 @@ export default class CategoriesList extends Component {
   render() {
     const {
       // searchTitle,
-      categories,
-      currentCategory,
+      customers,
+      currentCustomer,
       currentIndex,
       page,
       count,
       pageSize,
     } = this.state;
-
+    
     return (
       <div className="list row">
-        {/* <div className="col-md-8">
-          <div className="input-group mb-3">
-            <input
-              type="text"
-              className="form-control"
-              placeholder="Search by name"
-              value={searchTitle}
-              onChange={this.onChangeSearchTitle}
-            />
-            <div className="input-group-append">
-              <button
-                className="btn btn-outline-secondary"
-                type="button"
-                onClick={this.retrieveCategories}
-              >
-                Search
-              </button>
-            </div>
-          </div>
-        </div> */}
         <div className="col-md-6">
-          <h4>Categories List</h4>
+          <h4>Customers List</h4>
 
           <div className="mt-3">
             {"Items per Page: "}
@@ -188,68 +144,55 @@ export default class CategoriesList extends Component {
           </div>
 
           <ul className="list-group">
-            {categories &&
-              categories.map((category, index) => (
+            {customers &&
+              customers.map((customer, index) => (
                 <li
                   className={
                     "list-group-item " +
                     (index === currentIndex ? "active" : "")
                   }
-                  onClick={() => this.setActiveCategory(category, index)}
+                  onClick={() => this.setActiveCustomer(customer, index)}
                   key={index}
                 >
-                  {category.name}
+                  {customer.firstName}
                 </li>
               ))}
           </ul>
 
-          <button
-            className="m-3 btn btn-sm btn-danger"
-            // onClick={this.removeAllCategories}
-          >
-            Remove All
-          </button>
         </div>
         <div className="col-md-6">
-          {currentCategory ? (
+          {currentCustomer ? (
             <div>
-              <h4>Category</h4>
+              <h4>Customer</h4>
               <div>
                 <label>
-                  <strong>Name:</strong>
+                  <strong>FirstName:</strong>
                 </label>{" "}
-                {currentCategory.name}
+                {currentCustomer.firstName}
               </div>
               <div>
                 <label>
-                  <strong>Description:</strong>
+                  <strong>LastName:</strong>
                 </label>{" "}
-                {currentCategory.description}
+                {currentCustomer.lastName}
               </div>
               <div>
                 <label>
-                  <strong>LongDescription:</strong>
+                  <strong>EmailAddress:</strong>
                 </label>{" "}
-                {currentCategory.long_description}
+                {currentCustomer.emailAddress}
               </div>
               <div>
                 <label>
-                  <strong>Start_Date:</strong>
+                  <strong>DateCreated:</strong>
                 </label>{" "}
-                {Moment.utc(currentCategory.start_date).local().format("YYYY-MM-DD HH:mm:ss")}
+                {Moment.utc(currentCustomer.dateCreated).local().format("YYYY-MM-DD HH:mm:ss")}
               </div>
-
-              <Link
-                to={"/categories/" + currentCategory.id}
-                className="badge badge-warning"
-              >
-                Edit
-              </Link>
             </div>
           ) : (
             <div>
               <br />
-              <p>Please click on a Category...</p>
+              <p>Please click on a Customer...</p>
             </div>
           )}
         </div>
@@ -257,3 +200,14 @@ export default class CategoriesList extends Component {
     );
   }
 }
+
+const mapStateToProps = (state) => {
+  return {
+      customers: state.customers,
+  };
+}
+
+export default connect(mapStateToProps, {
+  retrieveCustAction,
+})(CustomersList);
+

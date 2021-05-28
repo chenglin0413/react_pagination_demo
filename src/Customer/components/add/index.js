@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import {connect} from 'react-redux';
-import {createCustAction,} from "../../../actions/customersActions";
-
+// import {createCustAction,} from "../../actions/customersActions";
+import CustomerDataService from '../../services'
 //FormVaildator
-import FormErrors from '../FormErros';
+import FormErrors from './FormErros';
 
-class AddCustomer extends Component {
+export default class AddCustomer extends Component {
   constructor(props) {
     super(props);
     this.onChangeFirstName = this.onChangeFirstName.bind(this);
@@ -93,8 +93,8 @@ class AddCustomer extends Component {
       emailAddress:this.state.emailAddress,
     };
 
-    this.props
-    .createCustAction(data)
+    // this.props
+    CustomerDataService.getAll(data)
       .then(response => {
         this.setState({
           id: response.id,
@@ -192,6 +192,6 @@ class AddCustomer extends Component {
 }
 
 //使用connect()()創建並暴露一個AddCustomer的容器組件
-export default connect(null, //映射狀態
-  { createCustAction, }//映射操作狀態的方法
-  )(AddCustomer);
+// export default connect(null, //映射狀態
+//   { createCustAction, }//映射操作狀態的方法
+//   )(AddCustomer);

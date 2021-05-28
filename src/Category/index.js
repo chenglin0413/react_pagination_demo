@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import CategoryDataService from "../../services/Category";
+import CategoryDataService from "./services";
 import Moment from 'moment';
 
 export default class Category extends Component {

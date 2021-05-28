@@ -4,14 +4,14 @@ import { DropdownButton,Dropdown } from 'react-bootstrap';
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 
-import Home from './components/home.component';
-import Category from "./components/Category"
-import Customer from "./components/Customer";
-import CategorySearch from "./components/search/Category";
-import CategoriesList from "./components/list/Category";
-import CustomerSearch from './components/search/Customer';
-import CustomersList from './components/list/Customer';
-import AddCustomer from "./components/add/Customer";
+import Home from './home.component';
+import Category from "./Category"
+import Customer from "./Customer";
+import CategorySearch from "./Category/components/search";
+import CategoriesList from "./Category/components/list";
+import CustomerSearch from './Customer/components/search';
+import CustomersList from './Customer/components/list';
+import AddCustomer from "./Customer/components/add";
 
 
 

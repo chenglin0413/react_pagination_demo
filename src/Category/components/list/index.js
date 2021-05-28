@@ -1,23 +1,23 @@
 import React, { Component } from "react";
-import {connect} from 'react-redux';
 import Moment from 'moment';
-import {retrieveCustAction} from "../../../actions/customersActions";
-// import CustomerDataService from '../../../services/Customer';
 import { Link } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
+import {connect} from 'react-redux';
+// import {retrieveCateAction} from "../../actions/categoryAction";
+import CategoryDataService from '../../services'
 
-class CustomersList extends Component {
+export default class CategoriesList extends Component {
   constructor(props) {
     super(props);
-    this.retrieveCustomers = this.retrieveCustomers.bind(this);
-    this.refreshData= this.refreshData.bind(this);
-    this.setActiveCustomer = this.setActiveCustomer.bind(this);
-    // this.removeAllCategories = this.removeAllCategories.bind(this);
+    this.retrieveCategories = this.retrieveCategories.bind(this);
+    this.refreshData = this.refreshData.bind(this);
+    this.setActiveCategory = this.setActiveCategory.bind(this);
     this.handlePageChange = this.handlePageChange.bind(this);
     this.handlePageSizeChange = this.handlePageSizeChange.bind(this);
 
     this.state = {
-      currentCustomer: null,
+      categories: [],
+      currentCategory: null,
       currentIndex: -1,
       searchTitle:props.location.state.searchTitle || "",
       // searchTitle: "",
@@ -31,38 +31,42 @@ class CustomersList extends Component {
   }
 
   componentDidMount() {
-    this.retrieveCustomers();
+    this.retrieveCategories();
   }
+
 
   getRequestParams(searchTitle, page, pageSize) {
     let params = {};
+
     if (searchTitle) {
-      params["firstName"] = searchTitle;
+      params["name"] = searchTitle;
     }
+
     if (page) {
       params["page"] = page - 1;
     }
+
     if (pageSize) {
       params["size"] = pageSize;
     }
+
     return params;
   }
 
-  retrieveCustomers() {
+  retrieveCategories() {
     const { searchTitle, page, pageSize } = this.state;
     console.log("searchTitle:"+searchTitle);
     const params = this.getRequestParams(searchTitle, page, pageSize);
-
-    this.props
-    .retrieveCustAction(params)
-      .then((response) => {
-        console.log(response);
-        const { customers, totalPages } = response;
+    
+    // this.props
+    CategoryDataService.getAll(params)
+      .then(response => {
+        const { categories, totalPages } = response.data;
         this.setState({
-          customers: customers,
+          categories: categories,
           count: totalPages,
         });
-        console.log(response);
+        console.log(response.data);
       })
       .catch((e) => {
         console.log(e);
@@ -71,28 +75,18 @@ class CustomersList extends Component {
 
   refreshData() {
     this.setState({
-      currentCustomer: null,
+      currentCategory: null,
       currentIndex: -1,
     });
   }
 
-  setActiveCustomer(customer, index) {
+  setActiveCategory(category, index) {
     this.setState({
-      currentCustomer: customer,
+      currentCategory: category,
       currentIndex: index,
     });
   }
 
-  // removeAllCategories() {
-  //   CategoryDataService.deleteAll()
-  //     .then((response) => {
-  //       console.log(response.data);
-  //       this.refreshList();
-  //     })
-  //     .catch((e) => {
-  //       console.log(e);
-  //     });
-  // }
 
   handlePageChange(event, value) {
     this.setState(
@@ -100,7 +94,7 @@ class CustomersList extends Component {
         page: value,
       },
       () => {
-        this.retrieveCustomers();
+        this.retrieveCategories();
       }
     );
   }
@@ -112,19 +106,16 @@ class CustomersList extends Component {
         page: 1
       },
       () => {
-        this.retrieveCustomers();
+        this.retrieveCategories();
       }
     );
   }
-  findByFirstName() {
-    this.refreshData();
-    this.props.findCustomersByFirstName(this.state.searchTitle);
-  }
+
   render() {
     const {
       // searchTitle,
-      customers,
-      currentCustomer,
+      categories,
+      currentCategory,
       currentIndex,
       page,
       count,
@@ -134,7 +125,7 @@ class CustomersList extends Component {
     return (
       <div className="list row">
         <div className="col-md-6">
-          <h4>Customers List</h4>
+          <h4>Categories List</h4>
 
           <div className="mt-3">
             {"Items per Page: "}
@@ -159,59 +150,53 @@ class CustomersList extends Component {
           </div>
 
           <ul className="list-group">
-            {customers &&
-              customers.map((customer, index) => (
+            {categories &&
+              categories.map((category, index) => (
                 <li
                   className={
                     "list-group-item " +
                     (index === currentIndex ? "active" : "")
                   }
-                  onClick={() => this.setActiveCustomer(customer, index)}
+                  onClick={() => this.setActiveCategory(category, index)}
                   key={index}
                 >
-                  {customer.firstName}
+                  {category.name}
                 </li>
               ))}
           </ul>
 
-          <button
-            className="m-3 btn btn-sm btn-danger"
-            // onClick={this.removeAllCategories}
-          >
-            Remove All
-          </button>
         </div>
         <div className="col-md-6">
-          {currentCustomer ? (
+          {currentCategory ? (
             <div>
-              <h4>Customer</h4>
+              <h4>Category</h4>
               <div>
                 <label>
-                  <strong>FirstName:</strong>
+                  <strong>Name:</strong>
                 </label>{" "}
-                {currentCustomer.firstName}
+                {currentCategory.name}
               </div>
               <div>
                 <label>
-                  <strong>LastName:</strong>
+                  <strong>Description:</strong>
                 </label>{" "}
-                {currentCustomer.lastName}
+                {currentCategory.description}
               </div>
               <div>
                 <label>
-                  <strong>EmailAddress:</strong>
+                  <strong>LongDescription:</strong>
                 </label>{" "}
-                {currentCustomer.emailAddress}
+                {currentCategory.long_description}
               </div>
               <div>
                 <label>
-                  <strong>DateCreated:</strong>
+                  <strong>Start_Date:</strong>
                 </label>{" "}
-                {Moment.utc(currentCustomer.dateCreated).local().format("YYYY-MM-DD HH:mm:ss")}
+                {Moment.utc(currentCategory.start_date).local().format("YYYY-MM-DD HH:mm:ss")}
               </div>
 
               <Link
-                to={"/customers/" + currentCustomer.id}
+                to={"/categories/" + currentCategory.id}
                 className="badge badge-warning"
               >
                 Edit
@@ -220,7 +205,7 @@ class CustomersList extends Component {
           ) : (
             <div>
               <br />
-              <p>Please click on a Customer...</p>
+              <p>Please click on a Category...</p>
             </div>
           )}
         </div>
@@ -229,13 +214,11 @@ class CustomersList extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  return {
-      customers: state.customers
-  };
-}
-
-export default connect(mapStateToProps, {
-  retrieveCustAction,
-})(CustomersList);
-
+// const mapStateToProps = (state) =>{
+//   return{
+//     categories:state.categories,
+//   };
+// }
+// export default connect(mapStateToProps, {
+//   retrieveCateAction,
+// })(CategoriesList);

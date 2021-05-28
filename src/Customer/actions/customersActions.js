@@ -1,6 +1,6 @@
 import {CREATE_CUSTOMER,RETRIEVE_CUSTOMERS} from "../constants";
   
-import CustomerDataService from "../services/Customer";
+import CustomerDataService from "../services";
   
   export const createCustAction = (data) => async (dispatch) => {
     try {
