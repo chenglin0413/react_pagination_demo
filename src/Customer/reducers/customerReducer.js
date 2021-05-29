@@ -4,11 +4,12 @@
 */
 import {CREATE_CUSTOMER,RETRIEVE_CUSTOMERS} from '../constants';
 
-const initState = [];
+const initState = [{}];
 
 export default function customerReducer(customers=initState,action){
     const{type,payload} = action;
-    console.log("redu",type,payload);
+    console.log("reducer",type,payload);
+    console.log(customers);
     switch (type){
         case CREATE_CUSTOMER:
             return [...customers,payload];

@@ -3,10 +3,10 @@ import Moment from 'moment';
 import { Link } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
 import {connect} from 'react-redux';
-// import {retrieveCateAction} from "../../actions/categoryAction";
-import CategoryDataService from '../../services'
+import {retrieveCateAction} from "../../actions/categoryAction";
+// import CategoryDataService from '../../services'
 
-export default class CategoriesList extends Component {
+class CategoriesList extends Component {
   constructor(props) {
     super(props);
     this.retrieveCategories = this.retrieveCategories.bind(this);
@@ -16,14 +16,13 @@ export default class CategoriesList extends Component {
     this.handlePageSizeChange = this.handlePageSizeChange.bind(this);
 
     this.state = {
-      categories: [],
       currentCategory: null,
       currentIndex: -1,
       searchTitle:props.location.state.searchTitle || "",
       // searchTitle: "",
 
       page: 1,
-      count: 0,
+      // count: 0,
       pageSize: 3,
     };
 
@@ -57,20 +56,18 @@ export default class CategoriesList extends Component {
     const { searchTitle, page, pageSize } = this.state;
     console.log("searchTitle:"+searchTitle);
     const params = this.getRequestParams(searchTitle, page, pageSize);
-    
-    // this.props
-    CategoryDataService.getAll(params)
-      .then(response => {
-        const { categories, totalPages } = response.data;
-        this.setState({
-          categories: categories,
-          count: totalPages,
-        });
-        console.log(response.data);
-      })
-      .catch((e) => {
-        console.log(e);
-      });
+    this.props.retrieveCateAction(params);
+      // .then(response => {
+      //   const { categories, totalPages } = response.data;
+      //   this.setState({
+      //     categories: categories,
+      //     count: totalPages,
+      //   });
+      //   console.log(response.data);
+      // })
+      // .catch((e) => {
+      //   console.log(e);
+      // });
   }
 
   refreshData() {
@@ -114,14 +111,14 @@ export default class CategoriesList extends Component {
   render() {
     const {
       // searchTitle,
-      categories,
       currentCategory,
       currentIndex,
       page,
-      count,
+      // count,
       pageSize,
     } = this.state;
-
+    const {categories} = this.props.cateReducer;
+    const count = this.props.cateReducer.totalPages;//totalPages 作為Pagination的count
     return (
       <div className="list row">
         <div className="col-md-6">
@@ -214,11 +211,11 @@ export default class CategoriesList extends Component {
   }
 }
 
-// const mapStateToProps = (state) =>{
-//   return{
-//     categories:state.categories,
-//   };
-// }
-// export default connect(mapStateToProps, {
-//   retrieveCateAction,
-// })(CategoriesList);
+const mapStateToProps = (state) =>{
+  return{
+    cateReducer:state.categoryReducer,
+  };
+}
+export default connect(mapStateToProps, {
+  retrieveCateAction,
+})(CategoriesList);

@@ -1,9 +1,10 @@
 import React, { Component } from "react";
 import {connect} from 'react-redux';
 import Moment from 'moment';
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
 import {retrieveCustAction} from "../../actions/customersActions";
+// import CustomerDataService from '../../services'
 
 class CustomersList extends Component {
   constructor(props) {
@@ -21,7 +22,7 @@ class CustomersList extends Component {
       // searchTitle: "",
 
       page: 1,
-      count: 0,
+      // count: 0,
       pageSize: 3,
     };
 
@@ -50,21 +51,18 @@ class CustomersList extends Component {
     const { searchTitle, page, pageSize } = this.state;
     console.log("searchTitle:"+searchTitle);
     const params = this.getRequestParams(searchTitle, page, pageSize);
-
-    this.props
-    .retrieveCustAction(params)
-      .then((response) => {
-        console.log(response);
-        const { customers, totalPages } = response;
-        this.setState({
-          customers: customers,
-          count: totalPages,
-        });
-        console.log(response);
-      })
-      .catch((e) => {
-        console.log(e);
-      });
+    this.props.retrieveCustAction(params);
+      // .then((response) => {
+      //   const { customers,totalPages } = response;
+      //   this.setState({
+      //     customers: customers,
+      //     count: totalPages,
+      //   });
+      //   console.log(response);
+      // })
+      // .catch((e) => {
+      //   console.log(e);
+      // });
   }
 
   refreshData() {
@@ -108,14 +106,13 @@ class CustomersList extends Component {
   render() {
     const {
       // searchTitle,
-      customers,
       currentCustomer,
       currentIndex,
       page,
-      count,
       pageSize,
     } = this.state;
-    
+    const{ customers } =this.props.custReducer;
+    const count  =this.props.custReducer.totalPages;//totalPages 作為Pagination的count
     return (
       <div className="list row">
         <div className="col-md-6">
@@ -203,7 +200,7 @@ class CustomersList extends Component {
 
 const mapStateToProps = (state) => {
   return {
-      customers: state.customers,
+      custReducer: state.customerReducer,
   };
 }
 

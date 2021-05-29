@@ -9,7 +9,6 @@ export const retrieveCateAction =(data) => async (dispatch) => {
                 type:RETRIEVE_CATEGORIES,
                 payload:res.data
         });
-        return Promise.resolve(res.data);
     }catch(error){
         return Promise.reject(error);
     }

@@ -5,7 +5,7 @@ import CustomerDataService from "../services";
   export const createCustAction = (data) => async (dispatch) => {
     try {
       const res = await CustomerDataService.create(data);
-      console.log(res.data);
+      console.log("action",res.data);
       dispatch({
         type: CREATE_CUSTOMER,
         payload: res.data,
@@ -18,12 +18,11 @@ import CustomerDataService from "../services";
   export const retrieveCustAction =(data) => async (dispatch) => {
     try {
         const res = await CustomerDataService.getAll(data);
-
+        console.log(res.data);
         dispatch({
                 type:RETRIEVE_CUSTOMERS,
                 payload:res.data
         });
-        return Promise.resolve(res.data);
     }catch(error){
         return Promise.reject(error);
     }

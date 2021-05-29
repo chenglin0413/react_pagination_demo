@@ -5,14 +5,13 @@
 import {RETRIEVE_CATEGORIES} from '../constants';
 
 
-const initState = [];
+const initState = [{}];
 
 export default function categoryReducer(categories=initState,action){
     const{type,payload} = action;
-    console.log("reduCATE",type,payload,categories);
+    console.log("categoryReducer",type,payload);
     switch (type){
         case RETRIEVE_CATEGORIES:
-            // console.log("OK");
             return payload; 
         default:
             return categories;
