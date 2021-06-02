@@ -10,6 +10,7 @@ import categoryReducer from './Category/reducers';
 
 
 const initialState = {};
+//彙總所有的reducer，變為一個reducer的集合
 const rootReducer =combineReducers({
     customerReducer,
     categoryReducer,

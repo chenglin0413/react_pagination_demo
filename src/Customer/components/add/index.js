@@ -11,6 +11,9 @@ class AddCustomer extends Component {
     this.onChangeFirstName = this.onChangeFirstName.bind(this);
     this.onChangeLastName = this.onChangeLastName.bind(this);
     this.onChangeEmailAddress = this.onChangeEmailAddress.bind(this);
+    this.onChangeChallengeAnswer = this.onChangeChallengeAnswer.bind(this);
+    this.onChangeExternalId = this.onChangeExternalId.bind(this);
+    this.onChangePassword = this.onChangePassword.bind(this);
     this.saveCustomer = this.saveCustomer.bind(this);
     this.newCustomer = this.newCustomer.bind(this);
 
@@ -18,8 +21,12 @@ class AddCustomer extends Component {
       id: null,
       firstName: "",
       lastName: "", 
-      emailAddress: "", 
-      published: false,
+      emailAddress: "",
+      challengeAnswer: "",
+      externalId:"",
+      password: "",
+      
+      
       submitted: false,
       formErrors:{firstName:"",lastName:"",emailAddress:""},
       firstNameValid: false,
@@ -51,6 +58,24 @@ class AddCustomer extends Component {
     this.setState({
       emailAddress: value
     },()=>this.validateField(name, value));
+  }
+  onChangeChallengeAnswer(e){
+    const value = e.target.value
+    this.setState({
+      challengeAnswer:value
+    })
+  }
+  onChangeExternalId(e){
+    const value = e.target.value
+    this.setState({
+      externalId:value
+    })
+  }
+  onChangePassword(e){
+    const value = e.target.value
+    this.setState({
+      password:value
+    })
   }
 
   validateField(fieldName, value) {
@@ -91,6 +116,9 @@ class AddCustomer extends Component {
       firstName: this.state.firstName,
       lastName: this.state.lastName,
       emailAddress:this.state.emailAddress,
+      challengeAnswer:this.state.challengeAnswer,
+      externalId:this.state.externalId,
+      password:this.state.password,
     };
 
     this.props
@@ -101,7 +129,9 @@ class AddCustomer extends Component {
           firstName: response.firstName,
           lastName: response.lastName,
           emailAddress: response.emailAddress,
-          published: response.published,
+          challengeAnswer: response.challengeAnswer,
+          externalId: response.externalId,
+          password: response.password,
 
           submitted: true
         });
@@ -118,7 +148,9 @@ class AddCustomer extends Component {
       firstName: "",
       lastName: "",
       emailAddress: "",
-      published: false,
+      challengeAnswer: "",
+      externalId: "",
+      password: "",
 
       submitted: false
     });
@@ -176,6 +208,42 @@ class AddCustomer extends Component {
                 value={this.state.emailAddress}
                 onChange={this.onChangeEmailAddress}
                 name="emailAddress"
+              />
+            </div>
+            <div className='form-group'>
+              <label htmlFor="challengeAnswer">ChallengeAnswer</label>
+              <input
+                type="text"
+                className="form-control"
+                id="challengeAnswer"
+                required
+                value={this.state.challengeAnswer}
+                onChange={this.onChangeChallengeAnswer}
+                name="challengeAnswer"
+              />
+            </div>
+            <div className='form-group'>
+              <label htmlFor="externalId">ExternalId</label>
+              <input
+                type="text"
+                className="form-control"
+                id="externalId"
+                required
+                value={this.state.externalId}
+                onChange={this.onChangeExternalId}
+                name="externalId"
+              />
+            </div>
+            <div className='form-group'>
+              <label htmlFor="password">Password</label>
+              <input
+                type="text"
+                className="form-control"
+                id="password"
+                required
+                value={this.state.password}
+                onChange={this.onChangePassword}
+                name="password"
               />
             </div>
             <div className="panel panel-default">

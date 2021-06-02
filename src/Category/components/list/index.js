@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 import Moment from 'moment';
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
 import {connect} from 'react-redux';
 import {retrieveCateAction} from "../../actions/categoryAction";
-// import CategoryDataService from '../../services'
+import { Table } from 'react-bootstrap';
 
 class CategoriesList extends Component {
   constructor(props) {
@@ -111,8 +111,8 @@ class CategoriesList extends Component {
   render() {
     const {
       // searchTitle,
-      currentCategory,
-      currentIndex,
+      // currentIndex,
+      // currentCategory,
       page,
       // count,
       pageSize,
@@ -121,7 +121,7 @@ class CategoriesList extends Component {
     const count = this.props.cateReducer.totalPages;//totalPages 作為Pagination的count
     return (
       <div className="list row">
-        <div className="col-md-6">
+        <div className="col-md-12">
           <h4>Categories List</h4>
 
           <div className="mt-3">
@@ -133,20 +133,11 @@ class CategoriesList extends Component {
                 </option>
               ))}
             </select>
-
-            <Pagination
-              className="my-3"
-              count={count}
-              page={page}
-              siblingCount={1}
-              boundaryCount={1}
-              variant="outlined"
-              shape="rounded"
-              onChange={this.handlePageChange}
-            />
+            
+            
           </div>
-
-          <ul className="list-group">
+          <br/>
+          {/* <ul className="list-group">
             {categories &&
               categories.map((category, index) => (
                 <li
@@ -160,10 +151,38 @@ class CategoriesList extends Component {
                   {category.name}
                 </li>
               ))}
-          </ul>
+          </ul> */}
+
+          <Table striped bordered hover >
+          <thead>
+            <tr>
+              <th >ID</th>
+              <th >Name </th>
+              <th >Description</th>
+              <th >Long Description</th>
+              <th >Start Date</th>
+            </tr>
+          </thead>
+          <tbody>
+          {categories &&
+            categories.map((category, index) => (
+                <tr
+                  onClick={() => this.setActiveCategory(category, index)}
+                  key={index}
+                >
+                  <td>{category.id}</td>
+                  <td>{category.name}</td>
+                  <td>{category.description}</td>
+                  <td>{category.long_description}</td>
+                  <td>{Moment.utc(category.start_date).local().format("YYYY-MM-DD HH:mm:ss")}</td>
+                </tr>
+              ))}
+          </tbody>
+        </Table>
+
 
         </div>
-        <div className="col-md-6">
+        {/* <div className="col-md-12">
           {currentCategory ? (
             <div>
               <h4>Category</h4>
@@ -205,7 +224,17 @@ class CategoriesList extends Component {
               <p>Please click on a Category...</p>
             </div>
           )}
-        </div>
+        </div> */}
+        <Pagination
+              className="my-3"
+              count={count}
+              page={page}
+              siblingCount={1}
+              boundaryCount={1}
+              variant="outlined"
+              shape="rounded"
+              onChange={this.handlePageChange}
+            />
       </div>
     );
   }
@@ -216,6 +245,8 @@ const mapStateToProps = (state) =>{
     cateReducer:state.categoryReducer,
   };
 }
+//state 中的對象，是來自store內傳遞的combinerReducers(Reducer)，
+// 若需要在UI組件中使用，需確認正確名稱，看當初提供的Reducer用甚麼名字
 export default connect(mapStateToProps, {
   retrieveCateAction,
 })(CategoriesList);

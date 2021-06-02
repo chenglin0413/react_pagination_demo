@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import {connect} from 'react-redux';
 import Moment from 'moment';
-// import { Link } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
 import {retrieveCustAction} from "../../actions/customersActions";
-// import CustomerDataService from '../../services'
-
+import { Table } from 'react-bootstrap';
+//export excel
+import ReactToExcel from 'react-html-table-to-excel';
 class CustomersList extends Component {
   constructor(props) {
     super(props);
@@ -23,7 +23,7 @@ class CustomersList extends Component {
 
       page: 1,
       // count: 0,
-      pageSize: 3,
+      pageSize: 10,
     };
 
     this.pageSizes = [3, 6, 9];
@@ -46,6 +46,7 @@ class CustomersList extends Component {
     }
     return params;
   }
+  
 
   retrieveCustomers() {
     const { searchTitle, page, pageSize } = this.state;
@@ -106,19 +107,20 @@ class CustomersList extends Component {
   render() {
     const {
       // searchTitle,
-      currentCustomer,
-      currentIndex,
+      // currentIndex,
+      // currentCustomer,
       page,
       pageSize,
     } = this.state;
     const{ customers } =this.props.custReducer;
     const count  =this.props.custReducer.totalPages;//totalPages 作為Pagination的count
+    const id = "table-to-xls";
     return (
-      <div className="list row">
-        <div className="col-md-6">
+      <div >
+        <div className="col-md-12" >
           <h4>Customers List</h4>
 
-          <div className="mt-3">
+          <div className="mt-3" >
             {"Items per Page: "}
             <select onChange={this.handlePageSizeChange} value={pageSize}>
               {this.pageSizes.map((size) => (
@@ -127,20 +129,9 @@ class CustomersList extends Component {
                 </option>
               ))}
             </select>
-
-            <Pagination
-              className="my-3"
-              count={count}
-              page={page}
-              siblingCount={1}
-              boundaryCount={1}
-              variant="outlined"
-              shape="rounded"
-              onChange={this.handlePageChange}
-            />
           </div>
-
-          <ul className="list-group">
+          <br/>
+          {/* <ul className="list-group">
             {customers &&
               customers.map((customer, index) => (
                 <li
@@ -154,10 +145,42 @@ class CustomersList extends Component {
                   {customer.firstName}
                 </li>
               ))}
-          </ul>
-
+          </ul>  */}
+          <Table striped bordered hover id={id} >
+          <thead>
+            <tr>
+              <th >ID</th>
+              <th >First Name </th>
+              <th >Last Name</th>
+              <th >Email Address</th>
+              <th >Date Created</th>
+              <th >Challenge Answer</th>
+              <th >External Id</th>
+              <th >Password</th>
+            </tr>
+          </thead>
+          <tbody>
+          {customers &&
+              customers.map((customer, index) => (
+                <tr
+                  onClick={() => this.setActiveCustomer(customer, index)}
+                  key={index}
+                >
+                  <td>{customer.id}</td>
+                  <td>{customer.firstName}</td>
+                  <td>{customer.lastName}</td>
+                  <td>{customer.emailAddress}</td>
+                  <td>{Moment.utc(customer.dateCreated).local().format("YYYY-MM-DD HH:mm:ss")}</td>
+                  <td>{customer.challengeAnswer}</td>
+                  <td>{customer.externalId}</td>
+                  <td>{customer.password}</td>
+                </tr>
+              ))}
+          </tbody>
+          
+        </Table>
         </div>
-        <div className="col-md-6">
+        {/* <div className="col-md-12">
           {currentCustomer ? (
             <div>
               <h4>Customer</h4>
@@ -185,6 +208,24 @@ class CustomersList extends Component {
                 </label>{" "}
                 {Moment.utc(currentCustomer.dateCreated).local().format("YYYY-MM-DD HH:mm:ss")}
               </div>
+              <div>
+                <label>
+                  <strong>ChallengeAnswer:</strong>
+                </label>{" "}
+                {currentCustomer.challengeAnswer}
+              </div>
+              <div>
+                <label>
+                  <strong>LocalCode:</strong>
+                </label>{" "}
+                {currentCustomer.localeCode}
+              </div>
+              <div>
+                <label>
+                  <strong>Password:</strong>
+                </label>{" "}
+                {currentCustomer.password}
+              </div>
             </div>
           ) : (
             <div>
@@ -192,7 +233,25 @@ class CustomersList extends Component {
               <p>Please click on a Customer...</p>
             </div>
           )}
-        </div>
+        </div> */}
+        
+        <Pagination
+              
+              className="my-3"
+              count={count}
+              page={page}
+              siblingCount={1}
+              boundaryCount={1}
+              variant="outlined"
+              shape="rounded"
+              onChange={this.handlePageChange}
+        />
+        <ReactToExcel
+          table="table-to-xls"//table id 
+          filename="excelFile"
+          sheet="sheet 1"
+          buttonText="EXPORT"
+        /> 
       </div>
     );
   }
@@ -203,7 +262,8 @@ const mapStateToProps = (state) => {
       custReducer: state.customerReducer,
   };
 }
-
+//state 中的對象，是來自store內傳遞的combinerReducers(Reducer)，
+// 若需要在UI組件中使用，需確認正確名稱，看當初提供的Reducer用甚麼名字
 export default connect(mapStateToProps, {
   retrieveCustAction,
 })(CustomersList);

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
-import { DropdownButton,Dropdown } from 'react-bootstrap';
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { NavDropdown,Navbar ,Nav} from 'react-bootstrap';
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 
@@ -23,32 +23,24 @@ class App extends Component {
     return (
       <Router>
         <div>
-          <nav className="navbar navbar-expand navbar-dark bg-dark">
-            <a href="/" className="navbar-brand">
-              Home
-            </a>
-            <div className="navbar-nav">
-              <li className="nav-item">
-                <DropdownButton id="dropdown-item-button" title="Customer">
-                    <Dropdown.Item as="button">
-                      <Link to={"/customer-search"} >Search</Link>
-                    </Dropdown.Item>
-                    <Dropdown.Item as="button">
-                      <Link to={"/customer-add"} >Add</Link>
-                    </Dropdown.Item>
-                </DropdownButton>
-              </li>
-            </div>
-            <div className="navbar-nav">
-              <li className="nav-item">   
-                <DropdownButton id="dropdown-item-button" title="Category">
-                    <Dropdown.Item as="button">
-                      <Link to={"/category-search"}>Search</Link>
-                    </Dropdown.Item>
-                </DropdownButton>
-              </li>
-            </div>
-          </nav>
+           
+           <Navbar bg="dark"  variant="dark" expand="lg">
+            <Navbar.Brand href="/">Home</Navbar.Brand>
+            <Navbar.Toggle aria-controls="basic-navbar-nav" />
+            <Navbar.Collapse id="basic-navbar-nav">
+              <Nav className="mr-auto">
+                <NavDropdown title="Customer" id="basic-nav-dropdown">
+                    <NavDropdown.Item href="/customer-search">Search</NavDropdown.Item>
+                    <NavDropdown.Item href="/customer-add">Add</NavDropdown.Item>
+                </NavDropdown>
+                <NavDropdown title="Category" id="basic-nav-dropdown">
+                    <NavDropdown.Item href="/category-search">Search</NavDropdown.Item>
+                </NavDropdown>
+              </Nav>
+             
+            </Navbar.Collapse> 
+          </Navbar> 
+          
 
           <div className="container mt-3">
             <Switch>
