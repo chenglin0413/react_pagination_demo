@@ -15,7 +15,7 @@ export default function customerReducer(customers=initState,action){
             // return [...customers,payload];
             return payload;
         case RETRIEVE_CUSTOMERS:
-            return  payload;  
+            return payload;  
         default:
             return customers;
     }

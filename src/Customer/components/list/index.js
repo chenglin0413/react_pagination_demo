@@ -1,152 +1,154 @@
 import React, { Component } from "react";
 import {connect} from 'react-redux';
 import Moment from 'moment';
-import Pagination from "@material-ui/lab/Pagination";
+import BootstrapTable from 'react-bootstrap-table-next';
+import paginationFactory from 'react-bootstrap-table2-paginator';
+import ToolkitProvider,{Search } from 'react-bootstrap-table2-toolkit';
+import filterFactory from 'react-bootstrap-table2-filter';
+// import * as ReactBootStrap from "react-bootstrap";
+
 import {retrieveCustAction} from "../../actions/customersActions";
-import { Table } from 'react-bootstrap';
-//export excel
-import ReactToExcel from 'react-html-table-to-excel';
+import ExportCSVBtn from './ExportCSVBtn';
+
+
+
 class CustomersList extends Component {
   constructor(props) {
     super(props);
     this.retrieveCustomers = this.retrieveCustomers.bind(this);
-    this.refreshData= this.refreshData.bind(this);
-    this.setActiveCustomer = this.setActiveCustomer.bind(this);
-    this.handlePageChange = this.handlePageChange.bind(this);
-    this.handlePageSizeChange = this.handlePageSizeChange.bind(this);
+    // this.refreshData= this.refreshData.bind(this);
+    // this.setActiveCustomer = this.setActiveCustomer.bind(this);
+
 
     this.state = {
-      currentCustomer: null,
-      currentIndex: -1,
+      // currentCustomer: null,
+      // currentIndex: -1,
       searchTitle:props.location.state.searchTitle || "",
-      // searchTitle: "",
-
-      page: 1,
-      // count: 0,
-      pageSize: 10,
     };
-
-    this.pageSizes = [3, 6, 9];
   }
 
   componentDidMount() {
     this.retrieveCustomers();
   }
 
-  getRequestParams(searchTitle, page, pageSize) {
+  getRequestParams(searchTitle) {
     let params = {};
     if (searchTitle) {
       params["firstName"] = searchTitle;
-    }
-    if (page) {
-      params["page"] = page - 1;
-    }
-    if (pageSize) {
-      params["size"] = pageSize;
     }
     return params;
   }
   
 
   retrieveCustomers() {
-    const { searchTitle, page, pageSize } = this.state;
+    const { searchTitle} = this.state;
     console.log("searchTitle:"+searchTitle);
-    const params = this.getRequestParams(searchTitle, page, pageSize);
+    const params = this.getRequestParams(searchTitle);
     this.props.retrieveCustAction(params);
-      // .then((response) => {
-      //   const { customers,totalPages } = response;
-      //   this.setState({
-      //     customers: customers,
-      //     count: totalPages,
-      //   });
-      //   console.log(response);
-      // })
-      // .catch((e) => {
-      //   console.log(e);
-      // });
   }
 
-  refreshData() {
-    this.setState({
-      currentCustomer: null,
-      currentIndex: -1,
-    });
-  }
+  // refreshData() {
+  //   this.setState({
+  //     currentCustomer: null,
+  //     currentIndex: -1,
+  //   });
+  // }
 
-  setActiveCustomer(customer, index) {
-    this.setState({
-      currentCustomer: customer,
-      currentIndex: index,
-    });
-  }
+  // setActiveCustomer(customer, index) {
+  //   this.setState({
+  //     currentCustomer: customer,
+  //     currentIndex: index,
+  //   });
+  // }
 
   
-  handlePageChange(event, value) {
-    this.setState(
-      {
-        page: value,
-      },
-      () => {
-        this.retrieveCustomers();
-      }
-    );
-  }
+  // handlePageChange(event, value) {
+  //   this.setState(
+  //     {
+  //       page: value,
+  //     },
+  //     () => {
+  //       this.retrieveCustomers();
+  //     }
+  //   );
+  // }
 
-  handlePageSizeChange(event) {
-    this.setState(
-      {
-        pageSize: event.target.value,
-        page: 1
-      },
-      () => {
-        this.retrieveCustomers();
-      }
-    );
-  }
+  // handlePageSizeChange(event) {
+  //   this.setState(
+  //     {
+  //       pageSize: event.target.value,
+  //       page: 1
+  //     },
+  //     () => {
+  //       this.retrieveCustomers();
+  //     }
+  //   );
+  // }
+ 
+
 
   render() {
-    const {
-      // searchTitle,
-      // currentIndex,
-      // currentCustomer,
-      page,
-      pageSize,
-    } = this.state;
-    const{ customers } =this.props.custReducer;
-    const count  =this.props.custReducer.totalPages;//totalPages 作為Pagination的count
-    const id = "table-to-xls";
+    function changeDateFormat(cellval) {
+         return Moment.utc(cellval).local().format("YYYY-MM-DD HH:mm:ss");
+    }
+    const { SearchBar } = Search;
+    const columns =[
+      {dataField:"id",text:"ID",sort:true},
+      {dataField:"firstName",text:"First Name"},
+      {dataField:"lastName",text:"Last Name"},
+      {dataField:"emailAddress",text:"Email Address"},
+      {dataField:"dateCreated",text:"Date Created",formatter: value => (changeDateFormat(value))},
+      {dataField:"challengeAnswer",text:"Challenge Answer"},
+      {dataField:"externalId",text:"External Id"},
+      {dataField:"password",text:"Password"},
+    ]
+    
+    const {customers}  =this.props;
+    // const count  =this.props.totalPages;//totalPages 作為Pagination的count
+    let customersDataTable =[];//做為Bootstrap Data Table 使用
+    if(customers) customersDataTable=customers;//如果資料回傳後才傳遞。
+    const rowStyle = {   padding: '0px' };
+    const headerStyle = { 
+      
+    };
     return (
       <div >
-        <div className="col-md-12" >
-          <h4>Customers List</h4>
+        <h4>Customers List</h4>
+        {/* <BootstrapTable 
+        id={id}
+        keyField="id"
+        data={customersDataTable}
+        columns={columns}
+        pagination={paginationFactory()}/> */}
+        <ToolkitProvider
+        
+          keyField="id"
+          data={ customersDataTable }
+          columns={ columns }
+          exportCSV={ { onlyExportFiltered: true, exportAll: false } }
+          search
+        >
+          {
+            props => (
+              <div>
+                <ExportCSVBtn { ...props.csvProps }>Export Filter Data To CSV!!</ExportCSVBtn>
+                <hr />
+                <SearchBar { ...props.searchProps } placeholder={"請輸入篩選字串"} />
+                <BootstrapTable { ...props.baseProps }
+                  pagination={paginationFactory()}
+                  filter={ filterFactory()}
+                  striped
+                  hover
+                  condensed
+                />
+              </div>
+            )
+          }
+        </ToolkitProvider>
 
-          <div className="mt-3" >
-            {"Items per Page: "}
-            <select onChange={this.handlePageSizeChange} value={pageSize}>
-              {this.pageSizes.map((size) => (
-                <option key={size} value={size}>
-                  {size}
-                </option>
-              ))}
-            </select>
-          </div>
-          <br/>
-          {/* <ul className="list-group">
-            {customers &&
-              customers.map((customer, index) => (
-                <li
-                  className={
-                    "list-group-item " +
-                    (index === currentIndex ? "active" : "")
-                  }
-                  onClick={() => this.setActiveCustomer(customer, index)}
-                  key={index}
-                >
-                  {customer.firstName}
-                </li>
-              ))}
-          </ul>  */}
-          <Table striped bordered hover id={id} >
+          
+
+          {/* <Table striped bordered hover id={id} >
           <thead>
             <tr>
               <th >ID</th>
@@ -176,82 +178,11 @@ class CustomersList extends Component {
                   <td>{customer.password}</td>
                 </tr>
               ))}
-          </tbody>
-          
-        </Table>
-        </div>
-        {/* <div className="col-md-12">
-          {currentCustomer ? (
-            <div>
-              <h4>Customer</h4>
-              <div>
-                <label>
-                  <strong>FirstName:</strong>
-                </label>{" "}
-                {currentCustomer.firstName}
-              </div>
-              <div>
-                <label>
-                  <strong>LastName:</strong>
-                </label>{" "}
-                {currentCustomer.lastName}
-              </div>
-              <div>
-                <label>
-                  <strong>EmailAddress:</strong>
-                </label>{" "}
-                {currentCustomer.emailAddress}
-              </div>
-              <div>
-                <label>
-                  <strong>DateCreated:</strong>
-                </label>{" "}
-                {Moment.utc(currentCustomer.dateCreated).local().format("YYYY-MM-DD HH:mm:ss")}
-              </div>
-              <div>
-                <label>
-                  <strong>ChallengeAnswer:</strong>
-                </label>{" "}
-                {currentCustomer.challengeAnswer}
-              </div>
-              <div>
-                <label>
-                  <strong>LocalCode:</strong>
-                </label>{" "}
-                {currentCustomer.localeCode}
-              </div>
-              <div>
-                <label>
-                  <strong>Password:</strong>
-                </label>{" "}
-                {currentCustomer.password}
-              </div>
-            </div>
-          ) : (
-            <div>
-              <br />
-              <p>Please click on a Customer...</p>
-            </div>
-          )}
-        </div> */}
+          </tbody> 
+          </Table> */}
+        {/* </div> */}
+
         
-        <Pagination
-              
-              className="my-3"
-              count={count}
-              page={page}
-              siblingCount={1}
-              boundaryCount={1}
-              variant="outlined"
-              shape="rounded"
-              onChange={this.handlePageChange}
-        />
-        <ReactToExcel
-          table="table-to-xls"//table id 
-          filename="excelFile"
-          sheet="sheet 1"
-          buttonText="EXPORT"
-        /> 
       </div>
     );
   }
@@ -259,7 +190,8 @@ class CustomersList extends Component {
 
 const mapStateToProps = (state) => {
   return {
-      custReducer: state.customerReducer,
+    customers: state.customerReducer.customers,
+    // totalPages: state.customerReducer.totalPages,
   };
 }
 //state 中的對象，是來自store內傳遞的combinerReducers(Reducer)，

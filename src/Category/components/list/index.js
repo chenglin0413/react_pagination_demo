@@ -23,7 +23,7 @@ class CategoriesList extends Component {
 
       page: 1,
       // count: 0,
-      pageSize: 3,
+      pageSize: 10,
     };
 
     this.pageSizes = [3, 6, 9];
@@ -119,8 +119,9 @@ class CategoriesList extends Component {
     } = this.state;
     const {categories} = this.props.cateReducer;
     const count = this.props.cateReducer.totalPages;//totalPages 作為Pagination的count
+    
     return (
-      <div className="list row">
+      <div>
         <div className="col-md-12">
           <h4>Categories List</h4>
 
