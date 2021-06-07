@@ -8,12 +8,6 @@ import FormErrors from './FormErros';
 class AddCustomer extends Component {
   constructor(props) {
     super(props);
-    this.onChangeFirstName = this.onChangeFirstName.bind(this);
-    this.onChangeLastName = this.onChangeLastName.bind(this);
-    this.onChangeEmailAddress = this.onChangeEmailAddress.bind(this);
-    this.onChangeChallengeAnswer = this.onChangeChallengeAnswer.bind(this);
-    this.onChangeExternalId = this.onChangeExternalId.bind(this);
-    this.onChangePassword = this.onChangePassword.bind(this);
     this.saveCustomer = this.saveCustomer.bind(this);
     this.newCustomer = this.newCustomer.bind(this);
 
@@ -25,6 +19,8 @@ class AddCustomer extends Component {
       challengeAnswer: "",
       externalId:"",
       password: "",
+      customerRoles:[],
+      roleName: "",
       
       
       submitted: false,
@@ -36,7 +32,7 @@ class AddCustomer extends Component {
     };
   }
 
-  onChangeFirstName(e) {
+  onChangeFirstName=(e)=> {
     const value = e.target.value
     const name =  e.target.name
     this.setState({
@@ -44,7 +40,7 @@ class AddCustomer extends Component {
     },()=>this.validateField(name,value));
   }
 
-  onChangeLastName(e) {
+  onChangeLastName =(e)=> {
     const value = e.target.value
     const name =  e.target.name
     this.setState({
@@ -52,32 +48,35 @@ class AddCustomer extends Component {
     },()=>this.validateField(name, value));
   }
 
-  onChangeEmailAddress(e) {
+  onChangeEmailAddress =(e)=> {
     const value = e.target.value
     const name =  e.target.name
     this.setState({
       emailAddress: value
     },()=>this.validateField(name, value));
   }
-  onChangeChallengeAnswer(e){
+  onChangeChallengeAnswer =(e)=>{
     const value = e.target.value
     this.setState({
       challengeAnswer:value
     })
   }
-  onChangeExternalId(e){
+  onChangeExternalId =(e)=>{
     const value = e.target.value
     this.setState({
       externalId:value
     })
   }
-  onChangePassword(e){
+  onChangePassword =(e)=>{
     const value = e.target.value
     this.setState({
       password:value
     })
   }
-
+  onChangeRoleName =(e)=>{
+    const value = e.target.value
+    this.setState({roleName:value})
+  }
   validateField(fieldName, value) {
     let fieldValidationErrors = this.state.formErrors;
     let firstNameValid = this.state.firstNameValid;
@@ -112,6 +111,7 @@ class AddCustomer extends Component {
   }
 
   saveCustomer() {
+    const customerRole = {"roleName":this.state.roleName};
     const data = {
       firstName: this.state.firstName,
       lastName: this.state.lastName,
@@ -119,8 +119,9 @@ class AddCustomer extends Component {
       challengeAnswer:this.state.challengeAnswer,
       externalId:this.state.externalId,
       password:this.state.password,
+      customerRoles:[customerRole],
     };
-
+    console.log(data);
     this.props
     .createCustAction(data)
       .then(response => {
@@ -151,6 +152,7 @@ class AddCustomer extends Component {
       challengeAnswer: "",
       externalId: "",
       password: "",
+      roleName: "",
 
       submitted: false
     });
@@ -244,6 +246,19 @@ class AddCustomer extends Component {
                 value={this.state.password}
                 onChange={this.onChangePassword}
                 name="password"
+              />
+            </div>
+            <hr />
+            <div className='form-group'>
+              <label htmlFor="roleName">Role Name</label>
+              <input
+                type="text"
+                className="form-control"
+                id="roleName"
+                required
+                value={this.state.roleName}
+                onChange={this.onChangeRoleName}
+                name="roleName"
               />
             </div>
             <div className="panel panel-default">

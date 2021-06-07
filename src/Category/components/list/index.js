@@ -110,9 +110,6 @@ class CategoriesList extends Component {
 
   render() {
     const {
-      // searchTitle,
-      // currentIndex,
-      // currentCategory,
       page,
       // count,
       pageSize,
@@ -138,22 +135,6 @@ class CategoriesList extends Component {
             
           </div>
           <br/>
-          {/* <ul className="list-group">
-            {categories &&
-              categories.map((category, index) => (
-                <li
-                  className={
-                    "list-group-item " +
-                    (index === currentIndex ? "active" : "")
-                  }
-                  onClick={() => this.setActiveCategory(category, index)}
-                  key={index}
-                >
-                  {category.name}
-                </li>
-              ))}
-          </ul> */}
-
           <Table striped bordered hover >
           <thead>
             <tr>
@@ -183,49 +164,6 @@ class CategoriesList extends Component {
 
 
         </div>
-        {/* <div className="col-md-12">
-          {currentCategory ? (
-            <div>
-              <h4>Category</h4>
-              <div>
-                <label>
-                  <strong>Name:</strong>
-                </label>{" "}
-                {currentCategory.name}
-              </div>
-              <div>
-                <label>
-                  <strong>Description:</strong>
-                </label>{" "}
-                {currentCategory.description}
-              </div>
-              <div>
-                <label>
-                  <strong>LongDescription:</strong>
-                </label>{" "}
-                {currentCategory.long_description}
-              </div>
-              <div>
-                <label>
-                  <strong>Start_Date:</strong>
-                </label>{" "}
-                {Moment.utc(currentCategory.start_date).local().format("YYYY-MM-DD HH:mm:ss")}
-              </div>
-
-              <Link
-                to={"/categories/" + currentCategory.id}
-                className="badge badge-warning"
-              >
-                Edit
-              </Link>
-            </div>
-          ) : (
-            <div>
-              <br />
-              <p>Please click on a Category...</p>
-            </div>
-          )}
-        </div> */}
         <Pagination
               className="my-3"
               count={count}
